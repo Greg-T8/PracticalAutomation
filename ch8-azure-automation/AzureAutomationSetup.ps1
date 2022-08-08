@@ -15,6 +15,7 @@ $main = {
     CreateStorageAccount
     AddAzureAutomationSolutionToWorkspace
     GetRegistrationInfo
+    ConvertAutomationAccountToManagedIdentity
 
 }
 
@@ -92,6 +93,28 @@ function GetRegistrationInfo {
         `$AutoURL = '$($AutomationReg.Endpoint)'
         `$AutoKey = '$($AutomationReg.PrimaryKey)'
 "@
+}
+
+function ConvertAutomationAccountToManagedIdentity {
+    $AzStorageAccount = @{
+        ResourceGroupName = $ResourceGroupName
+        AccountName       = $StorageAccountName
+    }
+    $storage = Get-AzStorageAccount @AzStorageAccount
+         
+    $AzAutomationAccount = @{
+        ResourceGroupName     = $ResourceGroupName
+        AutomationAccountName = $AutomationAccountName
+        AssignSystemIdentity  = $true
+    }
+    $Identity = Set-AzAutomationAccount @AzAutomationAccount
+         
+    $AzRoleAssignment = @{
+        ObjectId           = $Identity.Identity.PrincipalId
+        Scope              = $storage.Id
+        RoleDefinitionName = "Contributor"
+    }
+    New-AzRoleAssignment @AzRoleAssignment
 }
 
 & $main
