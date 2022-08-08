@@ -1,5 +1,5 @@
 $SubscriptionId = '79a5de62-f9aa-4693-b584-31424f327b0a' # <-- Learn - MPN 150
-$DateString = (Get-Date).ToString('yyMMdd')
+$DateString = (Get-Date).ToString('yyMMddHHmm')
 $ResourceGroupName = 'PoshAutomate' 
 $WorkspaceName = 'poshauto' + $DateString
 $AutomationAccountName = 'poshauto' + $DateString
@@ -65,7 +65,7 @@ function AddAzureAutomationSolutionToWorkspace {
         Location            = $workspace.Location
         WorkspaceResourceId = $workspace.ResourceId
     }
-    New-AzMonitorLogAnalyticsSolution @AzMonitorLogAnalyticsSolution
+    New-AzMonitorLogAnalyticsSolution @AzMonitorLogAnalyticsSolution -ErrorAction SilentlyContinue
 }
 
 function GetRegistrationInfo {
@@ -79,7 +79,7 @@ function GetRegistrationInfo {
         ResourceGroupName = $ResourceGroupName
         Name              = $WorkspaceName
     }
-    $WorspaceKeys = Get-AzOperationalInsightsWorkspaceSharedKey @WorkspaceSharedKey
+    $WorkspaceKeys = Get-AzOperationalInsightsWorkspaceSharedKey @WorkspaceSharedKey
          
     $AzAutomationRegistrationInfo = @{
         ResourceGroupName     = $ResourceGroupName
@@ -88,11 +88,10 @@ function GetRegistrationInfo {
     $AutomationReg = Get-AzAutomationRegistrationInfo @AzAutomationRegistrationInfo
         @"
         `$WorkspaceID = '$($Workspace.CustomerId)'
-        `$WorkSpaceKey = '$($WorspaceKeys.PrimarySharedKey)'
+        `$WorkSpaceKey = '$($WorkspaceKeys.PrimarySharedKey)'
         `$AutoURL = '$($AutomationReg.Endpoint)'
         `$AutoKey = '$($AutomationReg.PrimaryKey)'
 "@
-pause
 }
 
 & $main
