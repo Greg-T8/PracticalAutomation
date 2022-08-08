@@ -5,4 +5,4 @@ The book "Practical Automation with PowerShell" is available for early access fr
 
 ## Table of Contents
 
-[ ] [Chapter 8 - Cloud-Based Automation](/ch8-azure-automation/_index.md)
+- [ ] [Chapter 8 - Cloud-Based Automation](/ch8-azure-automation/_index.md)
