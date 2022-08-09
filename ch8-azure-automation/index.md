@@ -45,4 +45,4 @@ The module `HybridRegistration.psd1` provides an option to remove the registrati
 
 But you need to know the existing registration URL, which is not easy to get, as there's no `Get-HybridRunbookWorker` cmdlet.
 
-To fix, just delete the registry key 'HKLM\Software\Microsoft\HybridRunbookWorker'.
+To fix, just delete the registry key `HKLM\Software\Microsoft\HybridRunbookWorker`.
