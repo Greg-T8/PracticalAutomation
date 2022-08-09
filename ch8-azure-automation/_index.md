@@ -12,7 +12,7 @@ This script does a lot of stuff:
 - Prints out the resulting registration information, including
   - Log Analytics Workspace ID and shared key
   - Azure Automation endpoint URL and primary key
-- Converts automation account to a managed identity
+- Converts automation account to a Managed Identity
 - Grants the automation account contributor access to the storage account
 
 For more info on Managed Identities, see
@@ -20,4 +20,11 @@ For more info on Managed Identities, see
 - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 
 ## Hybrid Worker Setup
-When executing tasks on-prem, you need to do two things: (1) install the Microsoft Monitoring Agent and (2) 
+When executing tasks on-prem, you need to do two things: (1) install the Microsoft Monitoring Agent (MMA) and (2) register the system as a hybrid runbook worker.
+
+The script [SetUpMicrosoftMonitoringAgent.ps1](SetUpMicrosoftMonitoringAgent.ps1) does several things:
+- Downloads the MMA to the user's local temp directory
+- Runs the setup.exe for the MMMA
+- Registers the Log Analytics workspace with the MMA configuration
+
+
