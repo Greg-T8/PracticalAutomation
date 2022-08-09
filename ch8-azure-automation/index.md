@@ -1,3 +1,8 @@
+- [Chapter 8: Cloud-Based Automation](#chapter-8-cloud-based-automation)
+  - [Azure Automation Setup](#azure-automation-setup)
+  - [Hybrid Worker Setup](#hybrid-worker-setup)
+    - [Issue: Machine is already registered as a hybrid runbook worker](#issue-machine-is-already-registered-as-a-hybrid-runbook-worker)
+
 # Chapter 8: Cloud-Based Automation
 This chapter covers Azure Automation.
 
@@ -33,6 +38,8 @@ The script [CreateHybridRunbookWorker.ps1](CreateHybridRunbookWorker.ps1) does t
 - Runs the cmdlet `Add-HybridRunbookWorker`
 
 Note that this script depends on the output of [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1).
+
+
 
 ### Issue: Machine is already registered as a hybrid runbook worker
 You will receive the following error when running `CreateHybridRunbookWorker` multiple times:
