@@ -43,6 +43,6 @@ The module `HybridRegistration.psd1` provides an option to remove the registrati
 
 ![](img/2022-08-09-05-22-39.png)
 
-But you need to know the existing registration URL, which is not easy to get, as there's no `Get-HybridRunbookWorker` cmdlet.
+But you need to know the existing registration URL. This URL is not easy to get as there's no `Get-HybridRunbookWorker` cmdlet.
 
 To fix, just delete the registry key `HKLM\Software\Microsoft\HybridRunbookWorker`.
