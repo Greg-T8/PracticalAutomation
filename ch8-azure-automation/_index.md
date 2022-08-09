@@ -1,8 +1,11 @@
 # Chapter 8: Cloud-Based Automation
 This chapter covers Azure Automation. Here's a quick synopsis on the scripts in this chapter:
 
-[AzureAutomationSetup.ps1](AzureAutomationSetup.ps1)
-This script does a lot of stuff:
+The author presents several chunks of code that facilitate the setup of components used by Azure Automation.  
+
+I combined all chunks into a single script [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1). 
+
+This script does a lot of stuff:  
 - Creates a resource group
 - Creates an automation account
 - Creates a Log Analytics workspace
