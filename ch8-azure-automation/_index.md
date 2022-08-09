@@ -10,3 +10,5 @@ This script does a lot of stuff:
 - Prints out the resulting registration information, including
   - Log Analytics Workspace ID and shared key
   - Azure Automation endpoint URL and primary key
+- Converts automation account to a managed identity
+- Grants the automation account contributor access to the storage account

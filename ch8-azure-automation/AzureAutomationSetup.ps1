@@ -15,7 +15,7 @@ $main = {
     CreateStorageAccount
     AddAzureAutomationSolutionToWorkspace
     GetRegistrationInfo
-    Start-Sleep -Seconds 60
+    Start-Sleep -Seconds 120
     ConvertAutomationAccountToManagedIdentity
 
 }
