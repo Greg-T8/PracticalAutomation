@@ -15,7 +15,6 @@ $main = {
     CreateStorageAccount
     AddAzureAutomationSolutionToWorkspace
     GetRegistrationInfo
-    Start-Sleep -Seconds 120
     ConvertAutomationAccountToManagedIdentity
 
 }
@@ -115,6 +114,7 @@ function ConvertAutomationAccountToManagedIdentity {
         Scope              = $storage.Id
         RoleDefinitionName = "Contributor"
     }
+    Start-Sleep -Seconds 20
     New-AzRoleAssignment @AzRoleAssignment
 }
 

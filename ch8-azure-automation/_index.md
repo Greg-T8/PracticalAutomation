@@ -1,5 +1,5 @@
 # Chapter 8: Cloud-Based Automation
-This chapter covers Azure Automation. Here's a quick synopsis on the scripts in this chapter:
+This chapter covers Azure Automation.
 
 The author presents several chunks of code that facilitate the setup of components used by Azure Automation. I combined all chunks into a single script [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1). 
 
