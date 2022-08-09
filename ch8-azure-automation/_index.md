@@ -27,4 +27,11 @@ The script [SetUpMicrosoftMonitoringAgent.ps1](SetUpMicrosoftMonitoringAgent.ps1
 - Runs the setup.exe for the MMMA
 - Registers the Log Analytics workspace with the MMA configuration
 
+The script [CreateHybridRunbookWorker.ps1](CreateHybridRunbookWorker.ps1) does the following:
+- Looks up the install path for the Microsoft Monitoring Agent
+- Imports the module `HybridRegistration.psd1` from the AzureAutomation folder in the install path
+- Runs the cmdlet `Add-HybridRunbookWorker`
+
+Note that this script depends on the output of [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1).
+
 
