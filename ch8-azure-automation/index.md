@@ -39,8 +39,6 @@ The script [CreateHybridRunbookWorker.ps1](CreateHybridRunbookWorker.ps1) does t
 
 Note that this script depends on the output of [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1).
 
-
-
 ### Issue: Machine is already registered as a hybrid runbook worker
 You will receive the following error when running `CreateHybridRunbookWorker` multiple times:
 
@@ -53,3 +51,10 @@ The module `HybridRegistration.psd1` provides an option to remove the registrati
 But you need to know the existing registration URL. This URL is not easy to get as there's no `Get-HybridRunbookWorker` cmdlet.
 
 To fix, just delete the registry key `HKLM\Software\Microsoft\HybridRunbookWorker`.
+
+## Managing Modules for Hybrid Runbook Workers
+You need to manually manage your PowerShell modules on Hybrid Runbook Workers, as Azure Automation doesn't do that for you.
+
+Be sure to scope module installation to `AllUsers`:
+
+`Install-Module -Name <module name> -Scope AllUsers`
