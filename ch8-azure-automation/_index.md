@@ -34,4 +34,6 @@ The script [CreateHybridRunbookWorker.ps1](CreateHybridRunbookWorker.ps1) does t
 
 Note that this script depends on the output of [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1).
 
+You will receive the following error when running `CreateHybridRunbookWorker` multiple times:
 
+![](img/2022-08-09-05-19-00.png)
