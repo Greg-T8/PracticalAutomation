@@ -1,4 +1,4 @@
-- [Chapter 8: Cloud-Based Automation](#chapter-8-cloud-based-automation)
+[Chapter 8: Cloud-Based Automation](#chapter-8-cloud-based-automation)
   - [Azure Automation Setup](#azure-automation-setup)
   - [Hybrid Worker Setup](#hybrid-worker-setup)
     - [Issue: Machine is already registered as a hybrid runbook worker](#issue-machine-is-already-registered-as-a-hybrid-runbook-worker)
