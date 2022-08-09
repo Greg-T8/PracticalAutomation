@@ -1,4 +1,4 @@
-$SubscriptionId = '79a5de62-f9aa-4693-b584-31424f327b0a' # <-- Learn - MPN 150
+$SubscriptionId = '79a5de62-f9aa-4693-b584-31424f327b0a'
 $DateString = (Get-Date).ToString('yyMMddHHmm')
 $ResourceGroupName = 'PoshAutomate' 
 $WorkspaceName = 'poshauto' + $DateString
@@ -8,7 +8,6 @@ $AutomationLocation = 'SouthCentralUS'
 $WorkspaceLocation = 'SouthCentralUS'
 
 $main = {
-
     # CreateResourceGroup
     CreateLogAnalyticsWorkspace
     CreateAzureAutomationAccount
@@ -16,7 +15,6 @@ $main = {
     AddAzureAutomationSolutionToWorkspace
     GetRegistrationInfo
     ConvertAutomationAccountToManagedIdentity
-
 }
 
 function CreateResourceGroup {
