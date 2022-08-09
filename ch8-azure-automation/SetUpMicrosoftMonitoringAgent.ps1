@@ -1,5 +1,5 @@
-$WorkspaceID = '63cbbea0-3af1-434e-8938-b250c220d597'
-$WorkSpaceKey = 'Atf9IO6oIl4kPezZiJNo5zOgK8W2tC9rHLEcfP3L4Wnbn4P5A6QbVgpJ6I3eiG6Ql6LFeUte/LZ8j9qV9L1qXA=='
+$WorkspaceID = '<removed>'
+$WorkSpaceKey = '<removed>'
  
 $agentURL = 'https://download.microsoft.com/download' +
     '/3/c/d/3cd6f5b3-3fbe-43c0-88e0-8256d02db5b7/MMASetup-AMD64.exe'
