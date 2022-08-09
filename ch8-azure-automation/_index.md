@@ -12,9 +12,12 @@ This script does a lot of stuff:
 - Prints out the resulting registration information, including
   - Log Analytics Workspace ID and shared key
   - Azure Automation endpoint URL and primary key
-- Converts automation account to a managed identity.  See [here](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview) for more info on managed identities
+- Converts automation account to a managed identity
 - Grants the automation account contributor access to the storage account
 
+For more info on Managed Identities, see
+- [Azure Automation account authentication overview](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
+- [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 
 ## Hybrid Worker Setup
 When executing tasks on-prem, you need to do two things: (1) install the Microsoft Monitoring Agent and (2) 
