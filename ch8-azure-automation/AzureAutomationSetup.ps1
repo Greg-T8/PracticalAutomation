@@ -9,12 +9,13 @@ $WorkspaceLocation = 'SouthCentralUS'
 
 $main = {
     # CreateResourceGroup
-    CreateLogAnalyticsWorkspace
-    CreateAzureAutomationAccount
-    CreateStorageAccount
-    AddAzureAutomationSolutionToWorkspace
-    GetRegistrationInfo
-    ConvertAutomationAccountToManagedIdentity
+    # CreateLogAnalyticsWorkspace
+    # CreateAzureAutomationAccount
+    # CreateStorageAccount
+    # AddAzureAutomationSolutionToWorkspace
+    # GetRegistrationInfo
+    # ConvertAutomationAccountToManagedIdentity
+    CreateVariables
 }
 
 function CreateResourceGroup {
@@ -114,6 +115,52 @@ function ConvertAutomationAccountToManagedIdentity {
     }
     Start-Sleep -Seconds 20
     New-AzRoleAssignment @AzRoleAssignment
+}
+
+function CreateVariables {
+
+    # $ResourceGroupName = 'PoshAutomate'
+    # $AutomationAccountName = 'poshauto2208090444'
+    # $StorageAccountName = 'poshauto2208090444'
+
+    $AutoAcct = @{
+        ResourceGroupName     = $ResourceGroupName
+        AutomationAccountName = $AutomationAccountName
+        Encrypted             = $true
+    }
+    $Variable = @{
+        Name  = 'ZipStorage_AccountName'
+        Value = $StorageAccountName
+    }
+    New-AzAutomationVariable @AutoAcct @Variable
+         
+    $Variable = @{
+            Name  = 'ZipStorage_Subscription'
+            Value = $SubscriptionID
+    }
+    New-AzAutomationVariable @AutoAcct @Variable
+         
+    $Variable = @{
+            Name  = 'ZipStorage_ResourceGroup'
+            Value = $ResourceGroupName
+    }
+    New-AzAutomationVariable @AutoAcct @Variable
+}
+
+function UploadScriptToAzureAutomation {
+
+    $ResourceGroupName = 'PoshAutomate'
+    $AutomationAccountName = 'poshauto2208090444'
+
+    $AzAutomationRunbook = @{
+        Path                  = "$env:USERPROFILE\Desktop\Upload-ZipToBlob.ps1"
+        ResourceGroupName     = $ResourceGroupName
+        AutomationAccountName = $AutomationAccountName
+        Type                  = 'PowerShell'
+        Name                  = 'Upload-ZipToBlob'
+        Force                 = $true
+    }
+    $import = Import-AzAutomationRunbook @AzAutomationRunbook
 }
 
 & $main
