@@ -103,7 +103,32 @@ For more info on Managed Identities, see
 - [Azure Automation account authentication overview](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 
+Create variables for use with Azure Automation. These variables use encryption. This means you won't be able to view the values.
 
+```powershell
+$AutoAcct = @{
+	ResourceGroupName     = $ResourceGroupName
+	AutomationAccountName = $AutomationAccountName
+	Encrypted             = $true
+}
+$Variable = @{
+	Name  = 'ZipStorage_AccountName'
+	Value = $StorageAccountName
+}
+New-AzAutomationVariable @AutoAcct @Variable
+
+$Variable = @{
+    Name  = 'ZipStorage_SubscriptionID'
+    Value = $SubscriptionID
+}
+New-AzAutomationVariable @AutoAcct @Variable
+
+$Variable = @{
+    Name  = 'ZipStorage_ResourceGroup'
+    Value = $ResourceGroupName
+}
+New-AzAutomationVariable @AutoAcct @Variable
+```
 
 
 ## Microsoft Monitoring Agent and Hybrid Worker Setup
