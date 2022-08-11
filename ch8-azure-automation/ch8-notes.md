@@ -105,7 +105,8 @@ For more info on Managed Identities, see
 - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 
 
-**Output the keys for the MMA Agent and hybrid worker registration**
+**Output the keys for the MMA Agent and hybrid worker registration**  
+You will use these keys next when installing the Microsoft Monitoring Agent (MMA) and registering the MMA agent as a hybrid runbook worker. 
 ```powershell
 $InsightsWorkspace = @{
 	ResourceGroupName = $ResourceGroupName
@@ -181,6 +182,14 @@ $AgentCfg.AddCloudWorkspace($WorkspaceID,
 Restart-Service HealthService
 ```
 
+After installing the Microsoft Monitoring Agent (MMA), you then need to register the MMA agent as a hybrid runbook worker.
+
+The script [Create Hybrid Runbook Worker.ps1](scripts/2%20-%20Create%20Hybrid%20Runbook%20Worker.ps1) does the following:
+- Looks up the install path for the Microsoft Monitoring Agent
+- Imports the module `HybridRegistration.psd1` from the AzureAutomation folder in the install path
+- Runs the cmdlet `Add-HybridRunbookWorker`
+
+Note that this script depends on the output of [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1).
 
 ```powershell
 # Listing 2 - Create Hybrid Runbook Worker
@@ -215,12 +224,7 @@ $HybridRunbookWorker = @{
 }
 Add-HybridRunbookWorker @HybridRunbookWorker
 
-The script [CreateHybridRunbookWorker.ps1](CreateHybridRunbookWorker.ps1) does the following:
-- Looks up the install path for the Microsoft Monitoring Agent
-- Imports the module `HybridRegistration.psd1` from the AzureAutomation folder in the install path
-- Runs the cmdlet `Add-HybridRunbookWorker`
 
-Note that this script depends on the output of [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1).
 
 ### Issue: Machine is already registered as a hybrid runbook worker
 You will receive the following error when running `CreateHybridRunbookWorker` multiple times:
