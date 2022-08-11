@@ -2,7 +2,7 @@
 This chapter provides a brief introduction to Azure Automation.  
 
 ## Azure Automation Setup
-The author [presents](https://github.com/mdowst/Practical-Automation-with-PowerShell/blob/main/Chapter08/Snippets.md) several snippets of code that facilitate the setup of components used by Azure Automation. 
+The [author](https://github.com/mdowst) [presents](https://github.com/mdowst/Practical-Automation-with-PowerShell/blob/main/Chapter08/Snippets.md) several snippets of code that facilitate the setup of components used by Azure Automation. 
 
 **Import required modules**
 ```powershell
