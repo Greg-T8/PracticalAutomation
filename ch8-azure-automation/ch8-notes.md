@@ -133,13 +133,87 @@ $AutomationReg = Get-AzAutomationRegistrationInfo @AzAutomationRegistrationInfo
 ```
 
 
-## Hybrid Worker Setup
+## Microsoft Monitoring Agent and Hybrid Worker Setup
 When executing tasks on-prem, you need to do two things: (1) install the Microsoft Monitoring Agent (MMA) and (2) register the system as a hybrid runbook worker.
 
-The script [SetUpMicrosoftMonitoringAgent.ps1](SetUpMicrosoftMonitoringAgent.ps1) does several things:
+The script [Install Microsoft Monitoring Agent.ps1](scripts/1%20-%20Install%20Microsoft%20Monitoring%20Agent.ps1) does several things:
 - Downloads the MMA to the user's local temp directory
 - Runs the setup.exe for the MMMA
 - Registers the Log Analytics workspace with the MMA configuration
+
+**Install Microsoft Monitoring Agent.ps1**
+```powershell
+# Set the parameters for your workspace
+$WorkspaceID = 'YourId'
+$WorkSpaceKey = 'YourKey'
+
+# URL for the agent installer
+$agentURL = 'https://download.microsoft.com/download' +
+    '/3/c/d/3cd6f5b3-3fbe-43c0-88e0-8256d02db5b7/MMASetup-AMD64.exe'
+
+# Download the agent
+$FileName = Split-Path $agentURL -Leaf
+$MMAFile = Join-Path -Path $env:Temp -ChildPath $FileName
+Invoke-WebRequest -Uri $agentURL -OutFile $MMAFile | Out-Null
+
+# Install the agent
+$ArgumentList = '/C:"setup.exe /qn ' +
+    'ADD_OPINSIGHTS_WORKSPACE=0 ' +
+    'AcceptEndUserLicenseAgreement=1"'
+$Install = @{
+    FilePath     = $MMAFile
+    ArgumentList = $ArgumentList
+    ErrorAction  = 'Stop'
+}
+Start-Process @Install -Wait | Out-Null
+
+# Load the agent config com object
+$Object = @{
+	ComObject = 'AgentConfigManager.MgmtSvcCfg'
+}
+$AgentCfg = New-Object @Object
+
+# Set the workspace ID and key
+$AgentCfg.AddCloudWorkspace($WorkspaceID, 
+    $WorkspaceKey)
+
+# Restart the agent for the changes to take effect
+Restart-Service HealthService
+```
+
+
+```powershell
+# Listing 2 - Create Hybrid Runbook Worker
+# Set the parameters for your Automation Account
+$AutoUrl = ''
+$AutoKey = ''
+$Group   = $env:COMPUTERNAME
+
+# Find the directory the agent was installed in
+$Path = 'HKLM:\SOFTWARE\Microsoft\System Center ' +
+    'Operations Manager\12\Setup\Agent'
+$installPath = Get-ItemProperty -Path $Path | 
+    Select-Object -ExpandProperty InstallDirectory
+$AutomationFolder = Join-Path $installPath 'AzureAutomation'
+
+# Search the folder for the HybridRegistration module
+$ChildItem = @{
+	Path    = $AutomationFolder
+	Recurse = $true
+	Include = 'HybridRegistration.psd1'
+}
+Get-ChildItem @ChildItem | Select-Object -ExpandProperty FullName
+
+# Import the HybridRegistration module
+Import-Module $modulePath
+
+# Register the local machine with the automation account
+$HybridRunbookWorker = @{
+	Url       = $AutoUrl
+	key       = $AutoKey
+	GroupName = $Group
+}
+Add-HybridRunbookWorker @HybridRunbookWorker
 
 The script [CreateHybridRunbookWorker.ps1](CreateHybridRunbookWorker.ps1) does the following:
 - Looks up the install path for the Microsoft Monitoring Agent
