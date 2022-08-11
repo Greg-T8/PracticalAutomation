@@ -4,14 +4,14 @@ This chapter provides a brief introduction to Azure Automation.
 ## Azure Automation Setup
 The [author](https://github.com/mdowst) [presents](https://github.com/mdowst/Practical-Automation-with-PowerShell/blob/main/Chapter08/Snippets.md) several snippets of code that facilitate the setup of components used by Azure Automation. 
 
-### Import required modules
+Import required modules:
 ```powershell
 Install-Module -Name Az
 Install-Module -Name Az.MonitoringSolutions
 Import-Module -Name Az,Az.MonitoringSolutions
 ```
 
-### Set up variables used for creating Azure Automation resources
+Set up variables used for creating Azure Automation resources:
 ```powershell
 $SubscriptionId = 'The GUID of your Azure subscription'
 $DateString = (Get-Date).ToString('yyMMddHHmm')
@@ -23,17 +23,17 @@ $AutomationLocation = 'SouthCentralUS'
 $WorkspaceLocation = 'SouthCentralUS'
 ```
 
-### Connect to the Azure subscription
+Connect to the Azure subscription:
 ```powershell
 Connect-AzAccount -Subscription $SubscriptionId
 ```
 
-### Create the resource group 
+Create the resource group:
 ```powershell
 New-AzResourceGroup -Name $ResourceGroupName -Location $AutomationLocation
 ```
 
-### Create the Log Analytics workspace, Azure Automation account, and storage account
+Create the Log Analytics workspace, Azure Automation account, and storage account:
 ```powershell
 $WorkspaceParams = @{
 	ResourceGroupName = $ResourceGroupName
@@ -60,7 +60,7 @@ $AzStorageAccount = @{
 New-AzStorageAccount @AzStorageAccount
 ```
 
-### Add the Azure Automation solution to the Log Analytics workspace
+Add the Azure Automation solution to the Log Analytics workspace:
 ```powershell
 $WorkspaceParams = @{
 	ResourceGroupName = $ResourceGroupName
@@ -77,7 +77,7 @@ $AzMonitorLogAnalyticsSolution = @{
 New-AzMonitorLogAnalyticsSolution @AzMonitorLogAnalyticsSolution
 ```
 
-### Create a managed identity and give it contributor access to the storage account
+Create a managed identity and give it contributor access to the storage account:
 ```powershell
 $AzStorageAccount = @{
 	ResourceGroupName = $ResourceGroupName
@@ -105,8 +105,7 @@ For more info on Managed Identities, see
 - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 
 
-### Output the keys for the MMA Agent and hybrid worker registration
-You will use these keys next when installing the Microsoft Monitoring Agent (MMA) and registering the MMA agent as a hybrid runbook worker. 
+Output the keys for the MMA Agent and hybrid worker registration. You will use these keys in the next step when registering the MMA agent as a hybrid runbook worker. 
 ```powershell
 $InsightsWorkspace = @{
 	ResourceGroupName = $ResourceGroupName
@@ -141,7 +140,7 @@ The script [Install Microsoft Monitoring Agent.ps1](scripts/1%20-%20Install%20Mi
 - Runs the setup.exe for the MMMA
 - Registers the Log Analytics workspace with the MMA configuration
 
-**Install Microsoft Monitoring Agent.ps1**
+**Install Microsoft Monitoring Agent.ps1** 
 ```powershell
 # Set the parameters for your workspace
 $WorkspaceID = 'YourId'
@@ -188,11 +187,10 @@ The script [Create Hybrid Runbook Worker.ps1](scripts/2%20-%20Create%20Hybrid%20
 - Imports the module `HybridRegistration.psd1` from the AzureAutomation folder in the install path
 - Runs the cmdlet `Add-HybridRunbookWorker`
 
-This script uses the output from the [registration key snippet earlier](#output-the-keys-for-the-mma-agent-and-hybrid-worker-registration) to register the hybrid runbook worker.
+Use the output from the code snippet earlier to populate the `$AutoUrl` and `$AutoKey` variables.
 
-
+**Create Hybrid Runbook Worker.ps1**  
 ```powershell
-# Listing 2 - Create Hybrid Runbook Worker
 # Set the parameters for your Automation Account
 $AutoUrl = ''
 $AutoKey = ''
@@ -223,11 +221,10 @@ $HybridRunbookWorker = @{
 	GroupName = $Group
 }
 Add-HybridRunbookWorker @HybridRunbookWorker
-
-
+```
 
 ### Issue: Machine is already registered as a hybrid runbook worker
-You will receive the following error when running `CreateHybridRunbookWorker` multiple times:
+You will receive the following error when attempting to register the hybrid runbook worker multiple times:
 
 ![](img/2022-08-09-05-19-00.png)
 
@@ -240,8 +237,12 @@ But you need to know the existing registration URL. This URL is not easy to get 
 To fix, just delete the registry key `HKLM\Software\Microsoft\HybridRunbookWorker`.
 
 ## Managing Modules for Hybrid Runbook Workers
-You need to manually manage your PowerShell modules on Hybrid Runbook Workers, as Azure Automation doesn't do that for you.
+You must manually manage your PowerShell modules on hybrid runbook workers, as Azure Automation doesn't do that for you.
 
-Be sure to scope module installation to `AllUsers`:
+When installing modules on hybrid runbook workders, be sure to scope module installation to `AllUsers`:
 
 `Install-Module -Name <module name> -Scope AllUsers`
+
+The location of the `AllUsers` scope is
+- `$env:ProgramFiles\WindowsPowerShell\Modules`
+- `$env:ProgramFiles\PowerShell\Modules`
