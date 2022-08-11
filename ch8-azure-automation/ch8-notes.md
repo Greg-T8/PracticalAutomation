@@ -99,13 +99,19 @@ $AzRoleAssignment = @{
 }
 New-AzRoleAssignment @AzRoleAssignment
 ```
-
 For more info on Managed Identities, see
 - [Azure Automation account authentication overview](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 
 
-Output the keys for the MMA Agent and hybrid worker registration. You will use these keys in the next step when registering the MMA agent as a hybrid runbook worker. 
+
+
+## Microsoft Monitoring Agent and Hybrid Worker Setup
+When executing tasks on-prem, you need to do two things: (1) install the Microsoft Monitoring Agent (MMA) and (2) register the system as a hybrid runbook worker.
+
+Both of these steps are dependent on registration key information that you can obtain from the Log Analytics workspace and from the Automation Account.
+
+Use the following code to output the keys for the MMA Agent and hybrid worker registration. 
 ```powershell
 $InsightsWorkspace = @{
 	ResourceGroupName = $ResourceGroupName
@@ -132,13 +138,12 @@ $AutomationReg = Get-AzAutomationRegistrationInfo @AzAutomationRegistrationInfo
 "@
 ```
 
-## Microsoft Monitoring Agent and Hybrid Worker Setup
-When executing tasks on-prem, you need to do two things: (1) install the Microsoft Monitoring Agent (MMA) and (2) register the system as a hybrid runbook worker.
-
 The script [Install Microsoft Monitoring Agent.ps1](scripts/1%20-%20Install%20Microsoft%20Monitoring%20Agent.ps1) does several things:
 - Downloads the MMA to the user's local temp directory
 - Runs the setup.exe for the MMMA
 - Registers the Log Analytics workspace with the MMA configuration
+
+Plug in the values for the Workspace ID and Workspace Key from the step above into this snippet.
 
 **Install Microsoft Monitoring Agent.ps1** 
 ```powershell
@@ -236,10 +241,8 @@ But you need to know the existing registration URL. This URL is not easy to get 
 
 To fix, just delete the registry key `HKLM\Software\Microsoft\HybridRunbookWorker`.
 
-## Managing Modules for Hybrid Runbook Workers
-You must manually manage your PowerShell modules on hybrid runbook workers, as Azure Automation doesn't do that for you.
-
-When installing modules on hybrid runbook workders, be sure to scope module installation to `AllUsers`:
+### Managing Modules for Hybrid Runbook Workers
+You must manually manage your PowerShell modules on hybrid runbook workers, as Azure Automation doesn't do that for you. When installing modules on hybrid runbook workders, be sure to scope module installation to `AllUsers`:
 
 ```powershell
 Install-Module -Name <module name> -Scope AllUsers
