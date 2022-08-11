@@ -241,8 +241,12 @@ You must manually manage your PowerShell modules on hybrid runbook workers, as A
 
 When installing modules on hybrid runbook workders, be sure to scope module installation to `AllUsers`:
 
-`Install-Module -Name <module name> -Scope AllUsers`
+```powershell
+Install-Module -Name <module name> -Scope AllUsers
+```
 
 The location of the `AllUsers` scope is
 - `$env:ProgramFiles\WindowsPowerShell\Modules`
 - `$env:ProgramFiles\PowerShell\Modules`
+
+See [about_PSModulePath](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_psmodulepath?view=powershell-7.2) for more info.
