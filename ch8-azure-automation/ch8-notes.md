@@ -60,23 +60,78 @@ $AzStorageAccount = @{
 New-AzStorageAccount @AzStorageAccount
 ```
 
+**Add the Azure Automation solution to the Log Analytics workspace**
+```powershell
+$WorkspaceParams = @{
+	ResourceGroupName = $ResourceGroupName
+	Name              = $WorkspaceName
+}
+$workspace = Get-AzOperationalInsightsWorkspace @WorkspaceParams
 
+$AzMonitorLogAnalyticsSolution = @{
+	Type                = 'AzureAutomation'
+	ResourceGroupName   = $ResourceGroupName
+	Location            = $workspace.Location
+	WorkspaceResourceId = $workspace.ResourceId
+}
+New-AzMonitorLogAnalyticsSolution @AzMonitorLogAnalyticsSolution
+```
 
+**Create a managed identity and give it contributor access to the storage account**  
+```powershell
+$AzStorageAccount = @{
+	ResourceGroupName = $ResourceGroupName
+	AccountName       = $StorageAccountName
+}
+$storage = Get-AzStorageAccount @AzStorageAccount
 
-This script does a lot of stuff:  
-- Creates a resource group
-- Creates an automation account
-- Creates a Log Analytics workspace
-- Adds the Azure Automation solution to the Log Analytics workspace
-- Prints out the resulting registration information, including
-  - Log Analytics Workspace ID and shared key
-  - Azure Automation endpoint URL and primary key
-- Converts automation account to a Managed Identity
-- Grants the automation account contributor access to the storage account
+$AzAutomationAccount = @{
+	ResourceGroupName     = $ResourceGroupName
+	AutomationAccountName = $AutomationAccountName
+	AssignSystemIdentity  = $true
+}
+$Identity = Set-AzAutomationAccount @AzAutomationAccount
+
+$AzRoleAssignment = @{
+	ObjectId           = $Identity.Identity.PrincipalId
+	Scope              = $storage.Id
+	RoleDefinitionName = "Contributor"
+}
+New-AzRoleAssignment @AzRoleAssignment
+```
 
 For more info on Managed Identities, see
 - [Azure Automation account authentication overview](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
 - [What are managed identities for Azure resources?](https://docs.microsoft.com/en-us/azure/automation/automation-security-overview?WT.mc_id=Portal-Microsoft_Azure_Automation#managed-identities-preview)
+
+
+**Output the keys for the MMA Agent and hybrid worker registration**
+```powershell
+$InsightsWorkspace = @{
+	ResourceGroupName = $ResourceGroupName
+	Name              = $WorkspaceName
+}
+$Workspace = Get-AzOperationalInsightsWorkspace @InsightsWorkspace
+
+$WorkspaceSharedKey = @{
+	ResourceGroupName = $ResourceGroupName
+	Name              = $WorkspaceName
+}
+$WorspaceKeys = Get-AzOperationalInsightsWorkspaceSharedKey @WorkspaceSharedKey
+
+$AzAutomationRegistrationInfo = @{
+	ResourceGroupName     = $ResourceGroupName
+	AutomationAccountName = $AutomationAccountName
+}
+$AutomationReg = Get-AzAutomationRegistrationInfo @AzAutomationRegistrationInfo
+@"
+`$WorkspaceID = '$($Workspace.CustomerId)'
+`$WorkSpaceKey = '$($WorspaceKeys.PrimarySharedKey)'
+`$AutoURL = '$($AutomationReg.Endpoint)'
+`$AutoKey = '$($AutomationReg.PrimaryKey)'
+"@
+```
+
 
 ## Hybrid Worker Setup
 When executing tasks on-prem, you need to do two things: (1) install the Microsoft Monitoring Agent (MMA) and (2) register the system as a hybrid runbook worker.
