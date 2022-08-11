@@ -1,13 +1,67 @@
-[Chapter 8: Cloud-Based Automation](#chapter-8-cloud-based-automation)
-  - [Azure Automation Setup](#azure-automation-setup)
-  - [Hybrid Worker Setup](#hybrid-worker-setup)
-    - [Issue: Machine is already registered as a hybrid runbook worker](#issue-machine-is-already-registered-as-a-hybrid-runbook-worker)
-
 # Chapter 8: Cloud-Based Automation
-This chapter covers Azure Automation.
+This chapter provides a brief introduction to Azure Automation.  
 
 ## Azure Automation Setup
-The author presents several chunks of code that facilitate the setup of components used by Azure Automation. I combined all chunks into a single script [AzureAutomationSetup.ps1](AzureAutomationSetup.ps1). 
+The author [presents](https://github.com/mdowst/Practical-Automation-with-PowerShell/blob/main/Chapter08/Snippets.md) several snippets of code that facilitate the setup of components used by Azure Automation. 
+
+**Import required modules**
+```powershell
+Install-Module -Name Az
+Install-Module -Name Az.MonitoringSolutions
+Import-Module -Name Az,Az.MonitoringSolutions
+```
+
+**Set up variables used for creating Azure Automation resources**
+```powershell
+$SubscriptionId = 'The GUID of your Azure subscription'
+$DateString = (Get-Date).ToString('yyMMddHHmm')
+$ResourceGroupName = 'PoshAutomate'
+$WorkspaceName = 'poshauto' + $DateString
+$AutomationAccountName = 'poshauto' + $DateString
+$StorageAccountName = 'poshauto' + $DateString
+$AutomationLocation = 'SouthCentralUS'
+$WorkspaceLocation = 'SouthCentralUS'
+```
+
+**Connect to the Azure subscription**
+```powershell
+Connect-AzAccount -Subscription $SubscriptionId
+```
+
+**Create the resource group**
+```powershell
+New-AzResourceGroup -Name $ResourceGroupName -Location $AutomationLocation
+```
+
+**Create the Log Analytics workspace, Azure Automation account, and storage account**
+```powershell
+$WorkspaceParams = @{
+	ResourceGroupName = $ResourceGroupName
+	Name              = $WorkspaceName
+	Location          = $WorkspaceLocation
+}
+New-AzOperationalInsightsWorkspace @WorkspaceParams
+
+$AzAutomationAccount = @{
+	ResourceGroupName = $ResourceGroupName
+	Name              = $AutomationAccountName
+	Location          = $AutomationLocation
+	Plan              = 'Basic'
+}
+New-AzAutomationAccount @AzAutomationAccount
+
+$AzStorageAccount = @{
+	ResourceGroupName = $ResourceGroupName
+	AccountName       = $StorageAccountName
+	Location          = $AutomationLocation
+	SkuName           = 'Standard_LRS'
+	AccessTier        = 'Cool'
+}
+New-AzStorageAccount @AzStorageAccount
+```
+
+
+
 
 This script does a lot of stuff:  
 - Creates a resource group
@@ -58,4 +112,3 @@ You need to manually manage your PowerShell modules on Hybrid Runbook Workers, a
 Be sure to scope module installation to `AllUsers`:
 
 `Install-Module -Name <module name> -Scope AllUsers`
-
